@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
-zip -FSr lambda.zip * -x terraform -x docs
+# zip lambda.zip -R node_modules index.js functions/*
 cd terraform
+terraform -v
+terraform init
 terraform apply

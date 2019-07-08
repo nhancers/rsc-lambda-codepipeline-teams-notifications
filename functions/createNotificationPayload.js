@@ -10,13 +10,13 @@ module.exports = (pipeline) => {
         "@context": "http://schema.org/extensions",
         "summary": "CodePipeline Event Notification",
         "themeColor": getMessageColor(pipeline.state),
-        "title": `${pipeline.state}: ${pipeline.name}`,
+        "title": `Code-Pipeline: ${pipeline.state}: ${pipeline.name}`,
         "sections": [
             {
                 "facts": [
                     {
                         "name": "Start:",
-                        "value":dateStart.format("MMM D, YYYY @ h:mm a")
+                        "value": dateStart.format("MMM D, YYYY @ h:mm a")
                     },
                     {
                         "name": "End:",
@@ -33,8 +33,8 @@ module.exports = (pipeline) => {
     };
 
 
-    payload = addCommitDetails(payload,pipeline.details);
-    payload = addCodePipelineUrl(payload, pipeline.name);
+    payload = addCommitDetails(payload, pipeline.details);
+    payload = addCodePipelineUrl(payload, pipeline.name, pipeline.details.pipelineExecutionId);
 
     return payload;
 };
@@ -48,7 +48,7 @@ const getMessageColor = (pipelineState) => {
 
     };
 
-    switch(pipelineState.toUpperCase()){
+    switch (pipelineState.toUpperCase()) {
         case 'FAILED':
             return colors.error;
         case 'SUCCEEDED':
@@ -61,7 +61,7 @@ const getMessageColor = (pipelineState) => {
 
 const addCommitDetails = (payload, details) => {
 
-    if(details.artifactRevisions && details.artifactRevisions.length > 0) {
+    if (details.artifactRevisions && details.artifactRevisions.length > 0) {
 
         let commitDetails = details.artifactRevisions[0];
         payload.sections[0].facts.push(
@@ -75,7 +75,7 @@ const addCommitDetails = (payload, details) => {
             }
         );
 
-        if(commitDetails.revisionUrl) {
+        if (commitDetails.revisionUrl) {
             payload.potentialAction.push({
                 "@type": "OpenUri",
                 "name": "View in CodeCommit",
@@ -90,15 +90,15 @@ const addCommitDetails = (payload, details) => {
     return payload;
 };
 
-const addCodePipelineUrl = (payload, pipelineName) => {
+const addCodePipelineUrl = (payload, pipelineName, pipelineExecutionId) => {
 
     payload.potentialAction.push({
         "@type": "OpenUri",
-        "name": "View in CodePipeline",
+        "name": "View CodePipeline Steps",
         "targets": [
             {
                 "os": "default",
-                "uri": `https://console.aws.amazon.com/codepipeline/home?region=${process.env.AWS_REGION}#/view/${pipelineName}`
+                "uri": `https://console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineName}/executions/${pipelineExecutionId}/timeline?region=${process.env.AWS_REGION}`
             }
         ]
     });

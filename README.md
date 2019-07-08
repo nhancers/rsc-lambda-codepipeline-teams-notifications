@@ -8,10 +8,12 @@ Lambda function to handle CodePipeline CloudWatch events and send a notification
 Requires Terraform to be installed.
 
 1. Change permissions of deployment bash script `chmod +x deploy.sh`
-2. Run `./deploy.sh` which will prompt you for the following variables:
+2. Zip, node_modules, functions, index.js and name as lambda.zip
+3. Run `./deploy.sh` which will prompt you for the following variables:
     - profile = AWS CLI profile
     - region = AWS Region
     - teams_webhook_url = URL for Microsoft Teams webhook
+ 
 
 ### What's Going On:
 - Zips up the NodeJS code
